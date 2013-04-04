@@ -120,15 +120,18 @@ double test_f(void* o) {
 int main(int argc, char** argv) {
     int iters = 1e2;
     double F=1.0, CR=0.0, NP=40;
-    if(argc>1) {
-        iters = atoi(argv[1]);
-        if(argc>2) {
+    switch(argc) {
+        default:
+            F = atof(argv[4]);
+        case 4:
+            CR = atof(argv[3]);
+        case 3:
             NP = atoi(argv[2]);
-            if(argc>3) {
-                CR = atof(argv[3]);
-                if(argc>4) {
-                    F = atof(argv[4]);
-                }}}}
+        case 2:
+            iters = atoi(argv[1]);
+        case 1:
+            break;
+    }
 
     srand48(time(NULL));
     double result[N];   
