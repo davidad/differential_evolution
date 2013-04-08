@@ -3,8 +3,8 @@
 #include <string.h>
 #include <math.h>
 
-#define PRINT_DOTS
-#define PRINT_NEWBEST
+//#define PRINT_DOTS
+//#define PRINT_NEWBEST
 //#define PRINT_MOVEMENTS
 #define PRINT_FINAL_ANSWER
 
@@ -40,11 +40,16 @@ double differential_evolution(double* result, size_t N, objective_fn f, double F
     if(guess == NULL) {
         guess = unibox_guess;
     }
+
     double* xs = malloc(sizeof(double)*N*NP);
+
     int i;
     for(i=0;i<NP;i++) {
         guess(xs+(i*N),N);
     }
+
+    double y[N];
+
     double bestf = INFINITY;
     int bestx = 0;
     double fs[NP];
@@ -60,7 +65,6 @@ double differential_evolution(double* result, size_t N, objective_fn f, double F
             do { b = lrand48() % NP; } while(b == x || b == a);
             do { c = lrand48() % NP; } while(c == x || c == a || c == b);
             int R = lrand48() % N;
-            double y[N];
             for(i=0; i<N; i++) {
                double r = drand48();
                if(r < CR || i == R) {
@@ -97,7 +101,7 @@ double differential_evolution(double* result, size_t N, objective_fn f, double F
     return bestf;
 }
 
-double tgt[] = {1.0, -2.0, 3.0, -4.0, 5.0, -6.0, 7.0, -8.0};
+double tgt[] = {1.0, -2.0, 3.0, -4.0, 5.0, -6.0, 7.0, -8.0, 9.0, -10.0, 11.0, -12.0, 13.0, -14.0, 15.0, -16.0, 17.0, -18.0, 19.0, -20.0, 21.0, -22.0, 23.0, -24.0, 25.0, -26.0, 27.0, -28.0, 29.0, -30.0, 31.0, -32.0};
 size_t N = sizeof(tgt)/sizeof(double);
 
 int total_f_evals = 0;
@@ -118,25 +122,30 @@ double test_f(void* o) {
 }
 
 int main(int argc, char** argv) {
-    int iters = 1e2;
+    int iters = 1100;
+    int runs = 50;
     double F=1.0, CR=0.0, NP=40;
     if(argc>1) {
         iters = atoi(argv[1]);
         if(argc>2) {
-            NP = atoi(argv[2]);
+            runs = atoi(argv[2]);
             if(argc>3) {
-                CR = atof(argv[3]);
+                NP = atoi(argv[3]);
                 if(argc>4) {
-                    F = atof(argv[4]);
-                }}}}
+                    CR = atof(argv[4]);
+                    if(argc>5) {
+                        F = atof(argv[5]);
+                    }}}}}
 
     srand48(time(NULL));
     double result[N];   
-    double bestf = differential_evolution(result, N, test_f, F, CR, NP, NULL, iters);
+    while(runs--) {
+        double bestf = differential_evolution(result, N, test_f, F, CR, NP, NULL, iters);
 #ifdef PRINT_FINAL_ANSWER
-    printf("\nFINAL X  f(X): %e ",bestf);
-    print_vec(result,N);
-    printf("\nwith %d function evaluations\n", total_f_evals);
+        printf("\nFINAL X  f(X): %e ",bestf);
+        print_vec(result,N);
+        printf("\nwith %d total function evaluations\n", total_f_evals);
 #endif
+    }
     return 0;
 }
