@@ -8,7 +8,7 @@ PLAT := $(shell uname -sm | sed -e 's/ /-/g')
 UNAMEA := $(shell uname -a)
 UNAME_NOHOST := $(shell uname -mprsv)
 GCCV := $(shell gcc -v 2>&1)
-LUAJITV := $(shell luajit -v)
+LUAJITV := $(shell ./luajit -v)
 HASH := $(shell echo -e "$(UNAMEA)\n\n$(GCCV)\n\n$(LUAJITV)" | openssl sha1 | sed -e 's/^.*= *//' -e 'y/abcdef/ABCDEF/' | xxd -r -p | base64 | colrm 8 | tr '+/' '-_')
 HOSTID := host$(HASH)
 WD := results/$(PLAT)/$(HOSTID)
@@ -22,10 +22,10 @@ $(WD)/README.txt: $(WD) luajit
 
 luajit:
 ifeq ($(shell which luajit),)
-	@echo -e "LuaJIT doesn't appear to be installed on your system. Run\n\n > make luajit_build\n\nto attempt building it locally."
+	@echo "LuaJIT doesn't appear to be installed on your system. Run\n\n > make luajit_build\n\nto attempt building it locally."
 	@false
 else
-	@echo -e "locating luajit... " $(shell which luajit)
+	@echo "locating luajit... " $(shell which luajit)
 	ln -s $(shell which luajit) luajit
 endif
 
