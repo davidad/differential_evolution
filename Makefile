@@ -4,6 +4,9 @@ all: de
 de: de.c
 	gcc -O3 de.c -o de
 
+# Below this point is work in progress! Automated benchmarking and
+# uploading of results so I can get stats on different platforms, etc.
+
 PLAT := $(shell uname -sm | sed -e 's/ /-/g')
 UNAMEA := $(shell uname -a)
 UNAME_NOHOST := $(shell uname -mprsv)
